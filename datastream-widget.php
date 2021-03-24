@@ -3,7 +3,7 @@
 * Plugin Name: Datastream Widget Plugin
 * Plugin URI: http://thisgrrlcodes.ca
 * Description: A widget to display post thumbnails chronologically with a pinned feature post.
-* Version: 1.0
+* Version: 1.1
 * Author: Christine Shiels
 * Author URI: http://thisgrrlcodes.ca
 * Text Domain: datastream-widget
@@ -89,58 +89,62 @@ class Datastream_Widget extends WP_Widget {
                 </span>
                 </h4>
             </div>
-            
+
             <div class="datastream-content-wrapper">
-                
+            
+                <?php
+                // Query Datastream Featured post
+                $datastreamFeaturedPost = new WP_Query(array(
+                    'posts_per_page' => 1,
+                    'post_type' => 'post',
+                    'category_name' => 'datastream',
+                    'tag' => 'datastream-featured',
+                ));
+                // print_r($datastreamFeaturedPost->title);
 
-                
-                    <?php
-                    // Query Datastream Featured post
-                    $datastreamFeaturedPost = new WP_Query(array(
-                        'posts_per_page' => 1,
-                        'post_type' => 'post',
-                        'category_name' => 'datastream',
-                        'tag' => 'datastream-featured',
-                    ));
-                    // print_r($datastreamFeaturedPost->title);
-
-                    while($datastreamFeaturedPost->have_posts(  )) {
-                        $datastreamFeaturedPost->the_post(); ?>
-                    <div class="datastream-content-card">
-                    <a href="<?php the_permalink(); ?>" class="datastream-featured-post">
-                        <div class="datastream-featured-image">
-                            <h2 class="featured-label">Featured</h2>
-                            <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-featured-thumbnail' ] );?>
-                        </div>
-                    </a>
-                    <a href="<?php the_permalink(); ?>" class="datastream-featured-title-link datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
-                    </a>
-                </div>
+                while($datastreamFeaturedPost->have_posts(  )) {
+                    $datastreamFeaturedPost->the_post(); ?>
+                    <div class="datastream-featured-content-card">
+                        <a href="<?php the_permalink(); ?>" class="datastream-featured-post">
+                            <div class="datastream-featured-image">
+                                <h2 class="featured-label">Featured</h2>
+                                <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-featured-thumbnail' ] );?>
+                            </div>
+                        </a>
+                        <a href="<?php the_permalink(); ?>" class="datastream-featured-title-link datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
+                        </a>
+                    </div>
                 <?php }
-                    wp_reset_postdata(  );?>
-
+                wp_reset_postdata(  );?>
+                <div class="scrolling-section" id="section1">
+                    <a class="datastream-scroll-back" href="#section3"><</i></a>
                     <?php
-
+                    
                     // Query Datastream posts
-                    $datastreamFeaturedPost = new WP_Query(array(
+                    $datastreamPost = new WP_Query(array(
                         'posts_per_page' => 4,
                         'post_type' => 'post',
                         'category_name' => 'datastream',
                         'tag__not_in' => '5065'
                     ));
-
-                    while($datastreamFeaturedPost->have_posts(  )) {
-                        $datastreamFeaturedPost->the_post(); ?>
-                <div class="datastream-content-card">
-
-                    <a href="<?php the_permalink(); ?>" class="datastream-post">
-                        <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
-                    </a>
-                    <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
-                    </a>
+                    // if($datastreamPost->have_posts()) {
+                        $already_posted = array();
+                        while($datastreamPost->have_posts(  )) {
+                            $datastreamPost->the_post(); ?>
+                            
+                            <div class="datastream-content-card">
+                                <a href="<?php the_permalink(); ?>" class="datastream-post">
+                                    <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
+                                </a>
+                                <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
+                                </a>
+                            </div>
+                            <?php $already_posted[] = get_the_ID( );
+                         } print_r($already_posted());
+                    // } ?>
+                    <a class="datastream-scroll-forward" href="#section3">></i></a>
                 </div>
-                <?php }
-                wp_reset_postdata(  );?>
+                <?php wp_reset_postdata(  );?>
             </div>
         </section>
 
@@ -148,9 +152,6 @@ class Datastream_Widget extends WP_Widget {
             <?php
 
     }
-
-
-
 
 }
 
