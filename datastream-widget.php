@@ -3,7 +3,7 @@
 * Plugin Name: Datastream Widget Plugin
 * Plugin URI: http://thisgrrlcodes.ca
 * Description: A widget to display post thumbnails chronologically with a pinned feature post.
-* Version: 1.1
+* Version: 1.0
 * Author: Christine Shiels
 * Author URI: http://thisgrrlcodes.ca
 * Text Domain: datastream-widget
@@ -116,35 +116,97 @@ class Datastream_Widget extends WP_Widget {
                     </div>
                 <?php }
                 wp_reset_postdata(  );?>
-                <div class="scrolling-section" id="section1">
-                    <a class="datastream-scroll-back" href="#section3"><</i></a>
-                    <?php
+                <div class="scroll-wrapper">
+                    <div class="scrolling-section" id="section1">
+                        <a class="datastream-scroll-back" href="#section3"><</i></a>
+                        <?php
+                        
+                        // Query Datastream posts page 1
+                        $datastreamPostsP1 = new WP_Query(array(
+                            'posts_per_page' => 4,
+                            'post_type' => 'post',
+                            'category_name' => 'datastream',
+                            'tag__not_in' => '5065'
+                        ));
+                        // if($datastreamPostsP1->have_posts()) {
+                            $already_posted = array();
+                            while($datastreamPostsP1->have_posts(  )) {
+                                $datastreamPostsP1->the_post(); ?>
+                                
+                                <div class="datastream-content-card">
+                                    <a href="<?php the_permalink(); ?>" class="datastream-post">
+                                        <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
+                                    </a>
+                                    <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
+                                    </a>
+                                </div>
+                                <?php $already_posted[] = get_the_ID( );
+                            }
+                        // } ?>
+                        <a class="datastream-scroll-forward" href="#section2">></i></a>
+                    </div>
+                    <?php wp_reset_postdata(  );?>
                     
-                    // Query Datastream posts
-                    $datastreamPost = new WP_Query(array(
-                        'posts_per_page' => 4,
-                        'post_type' => 'post',
-                        'category_name' => 'datastream',
-                        'tag__not_in' => '5065'
-                    ));
-                    // if($datastreamPost->have_posts()) {
-                        $already_posted = array();
-                        while($datastreamPost->have_posts(  )) {
-                            $datastreamPost->the_post(); ?>
-                            
-                            <div class="datastream-content-card">
-                                <a href="<?php the_permalink(); ?>" class="datastream-post">
-                                    <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
-                                </a>
-                                <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
-                                </a>
-                            </div>
-                            <?php $already_posted[] = get_the_ID( );
-                         } print_r($already_posted());
-                    // } ?>
-                    <a class="datastream-scroll-forward" href="#section3">></i></a>
+                    <div class="scrolling-section" id="section2">
+                        <a class="datastream-scroll-back" href="#section1"><</i></a>
+                        <?php
+                        
+                        // Query Datastream posts
+                        $datastreamPostsP2 = new WP_Query(array(
+                            'posts_per_page' => 4,
+                            'post_type' => 'post',
+                            'category_name' => 'datastream',
+                            'tag__not_in' => '5065',
+                            'post__not_in' => $already_posted
+                        ));
+                        // if($datastreamPostsP2->have_posts()) {
+                            while($datastreamPostsP2->have_posts(  )) {
+                                $datastreamPostsP2->the_post(); ?>
+                                
+                                <div class="datastream-content-card">
+                                    <a href="<?php the_permalink(); ?>" class="datastream-post">
+                                        <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
+                                    </a>
+                                    <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
+                                    </a>
+                                </div>
+                                <?php $already_posted[] = get_the_ID( );
+                            }
+                        // } ?>
+                        <a class="datastream-scroll-forward" href="#section3">></i></a>
+                    </div>
+                    <?php wp_reset_postdata(  );?>
+
+                    <div class="scrolling-section" id="section3">
+                        <a class="datastream-scroll-back" href="#section2"><</i></a>
+                        <?php
+                        
+                        // Query Datastream posts
+                        $datastreamPostsP3 = new WP_Query(array(
+                            'posts_per_page' => 4,
+                            'post_type' => 'post',
+                            'category_name' => 'datastream',
+                            'tag__not_in' => '5065',
+                            'post__not_in' => $already_posted
+                        ));
+                        // if($datastreamPostsP3->have_posts()) {
+                            while($datastreamPostsP3->have_posts(  )) {
+                                $datastreamPostsP3->the_post(); ?>
+                                
+                                <div class="datastream-content-card">
+                                    <a href="<?php the_permalink(); ?>" class="datastream-post">
+                                        <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
+                                    </a>
+                                    <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
+                                    </a>
+                                </div>
+                                <?php $already_posted[] = get_the_ID( );
+                            }
+                        // } ?>
+                        <a class="datastream-scroll-forward" href="#section1">></i></a>
+                    </div>
+                    <?php wp_reset_postdata(  );?>
                 </div>
-                <?php wp_reset_postdata(  );?>
             </div>
         </section>
 
