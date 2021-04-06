@@ -91,7 +91,7 @@ class Datastream_Widget extends WP_Widget {
             </div>
 
             <div class="datastream-content-wrapper">
-            
+
                 <?php
                 // Query Datastream Featured post
                 $datastreamFeaturedPost = new WP_Query(array(
@@ -114,16 +114,19 @@ class Datastream_Widget extends WP_Widget {
                         <a href="<?php the_permalink(); ?>" class="datastream-featured-title-link datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
                         </a>
                     </div>
+                        <span class="black-box"></span>
+
+
                 <?php }
                 wp_reset_postdata(  );?>
                 <div class="scroll-wrapper">
-                    <div class="scrolling-section" id="section1">
-                        <a class="datastream-scroll-back" href="#section3"><</i></a>
+                    <button id="back" class="datastream-scroll-back"><i class="fas fa-chevron-left"></i></button>
+                    <div class="scroller" id="scroller">
                         <?php
-                        
+
                         // Query Datastream posts page 1
                         $datastreamPostsP1 = new WP_Query(array(
-                            'posts_per_page' => 4,
+                            'posts_per_page' => 12,
                             'post_type' => 'post',
                             'category_name' => 'datastream',
                             'tag__not_in' => '5065'
@@ -132,67 +135,7 @@ class Datastream_Widget extends WP_Widget {
                             $already_posted = array();
                             while($datastreamPostsP1->have_posts(  )) {
                                 $datastreamPostsP1->the_post(); ?>
-                                
-                                <div class="datastream-content-card">
-                                    <a href="<?php the_permalink(); ?>" class="datastream-post">
-                                        <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
-                                    </a>
-                                    <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
-                                    </a>
-                                </div>
-                                <?php $already_posted[] = get_the_ID( );
-                            }
-                        // } ?>
-                        <a class="datastream-scroll-forward" href="#section2">></i></a>
-                    </div>
-                    <?php wp_reset_postdata(  );?>
-                    
-                    <div class="scrolling-section" id="section2">
-                        <a class="datastream-scroll-back" href="#section1"><</i></a>
-                        <?php
-                        
-                        // Query Datastream posts
-                        $datastreamPostsP2 = new WP_Query(array(
-                            'posts_per_page' => 4,
-                            'post_type' => 'post',
-                            'category_name' => 'datastream',
-                            'tag__not_in' => '5065',
-                            'post__not_in' => $already_posted
-                        ));
-                        // if($datastreamPostsP2->have_posts()) {
-                            while($datastreamPostsP2->have_posts(  )) {
-                                $datastreamPostsP2->the_post(); ?>
-                                
-                                <div class="datastream-content-card">
-                                    <a href="<?php the_permalink(); ?>" class="datastream-post">
-                                        <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
-                                    </a>
-                                    <a href="<?php the_permalink(); ?>" class="datastream-title-link"><h2 class="datastream-post-title"><?php the_title( ) ?></h2>
-                                    </a>
-                                </div>
-                                <?php $already_posted[] = get_the_ID( );
-                            }
-                        // } ?>
-                        <a class="datastream-scroll-forward" href="#section3">></i></a>
-                    </div>
-                    <?php wp_reset_postdata(  );?>
 
-                    <div class="scrolling-section" id="section3">
-                        <a class="datastream-scroll-back" href="#section2"><</i></a>
-                        <?php
-                        
-                        // Query Datastream posts
-                        $datastreamPostsP3 = new WP_Query(array(
-                            'posts_per_page' => 4,
-                            'post_type' => 'post',
-                            'category_name' => 'datastream',
-                            'tag__not_in' => '5065',
-                            'post__not_in' => $already_posted
-                        ));
-                        // if($datastreamPostsP3->have_posts()) {
-                            while($datastreamPostsP3->have_posts(  )) {
-                                $datastreamPostsP3->the_post(); ?>
-                                
                                 <div class="datastream-content-card">
                                     <a href="<?php the_permalink(); ?>" class="datastream-post">
                                         <?php the_post_thumbnail( 'medium', [ 'class' => 'datastream-thumbnail' ] );?>
@@ -203,13 +146,60 @@ class Datastream_Widget extends WP_Widget {
                                 <?php $already_posted[] = get_the_ID( );
                             }
                         // } ?>
-                        <a class="datastream-scroll-forward" href="#section1">></i></a>
+
                     </div>
+                    <button id="forward" class="datastream-scroll-forward"><i class="fas fa-chevron-right"></i></button>
                     <?php wp_reset_postdata(  );?>
                 </div>
             </div>
-        </section>
+            <script>
+                const scroller = document.getElementById('scroller');
+                const forward = document.getElementById('forward');
+                const back = document.getElementById('back');
+                console.log(scroller, forward, back);
 
+                let counter = 1;
+
+                function scrollForward() {
+
+                    // let moveLeft = counter * -1
+
+
+                    if(counter < 9) {
+                        scroller.style.left = `calc(-1 * ${counter} * (20vw - .7%))`;
+                        counter++;
+                        if(counter >= 2){
+                        back.style.display = "inherit";
+                        }
+                    }
+                    if(counter == 9) {
+                        forward.style.display = "none";
+                    }
+
+
+
+                    console.log(counter);
+                }
+
+                forward.addEventListener("click", scrollForward);
+
+                function scrollBack() {
+                    counter--;
+                    if(counter <= 1) {
+                        back.style.display = "none";
+                    }
+                    if (counter <= 9) {
+                        scroller.style.left = `calc(-1 * (${counter} - 1) * (20vw - .7%))`;
+                        forward.style.display = "inherit";
+                    }
+
+                    console.log(counter);
+
+                }
+
+                back.addEventListener("click", scrollBack);
+            </script>
+        </section>
 
             <?php
 
